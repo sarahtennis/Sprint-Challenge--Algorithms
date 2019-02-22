@@ -64,12 +64,9 @@ class SortingRobot:
         """
         return self._position > 0
 
-    def move_to_index(self, index):
-        while index != self._position:
-            if index < self._position and self.can_move_left():
-                self.move_left()
-            elif index > self._position and self.can_move_right():
-                self.move_right()
+    def move_to_front(self):
+        while self.can_move_left():
+            self.move_left()
 
     def move_right(self):
         """
@@ -171,31 +168,50 @@ class SortingRobot:
         # [2!, 2, 1] hold None SWAP, MOVE RIGHT
         # [None, 2!, 1] hold 2, MOVE LEFT SWAP MOVE RIGHT
         # [2, 2!, 1] hold None, SWAP MOVE RIGHT
-        #
- 
-        for i in range(len(self._list)):
-            self.move_to_index(0)
-            self.set_light_off()
-            for j in range(i, len(self._list)):
+        
+        self.move_to_front()
+        self.set_light_off()
+
+        while self.can_move_right():
+            self.swap_item()
+            self.move_right()
+            if self.compare_item() > 0:
                 self.swap_item()
-                if self.can_move_right():
-                    self.move_right()
-                    if self.compare_item() > 0:
-                        self.swap_item()
-                        self.move_left()
-                        self.swap_item()
-                        self.move_right()
-                        self.set_light_on()
-                    else:
-                        self.move_left()
-                        self.swap_item()
-                        self.move_right()
-                else:
-                    self.swap_item()                   
+                self.move_left()
+                self.swap_item()
+                self.move_right()
+                self.set_light_on()
+            else:
+                self.move_left()
+                self.swap_item()
+                self.move_right()
+            while self.light_is_on() and not self.can_move_right():
+                self.move_to_front()
+                self.set_light_off()
+ 
+        # for i in range(len(self._list)):
+        #     self.move_to_index(0)
+        #     self.set_light_off()
+        #     for j in range(i, len(self._list)):
+        #         self.swap_item()
+        #         if self.can_move_right():
+        #             self.move_right()
+        #             if self.compare_item() > 0:
+        #                 self.swap_item()
+        #                 self.move_left()
+        #                 self.swap_item()
+        #                 self.move_right()
+        #                 self.set_light_on()
+        #             else:
+        #                 self.move_left()
+        #                 self.swap_item()
+        #                 self.move_right()
+        #         else:
+        #             self.swap_item()                   
                 
-            if not self.light_is_on():
-                return self._list
-        return self._list
+        #     if not self.light_is_on():
+        #         return self._list
+        # return self._list
 
 
 
